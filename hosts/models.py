@@ -386,14 +386,12 @@ class Host(models.Model):
         self.reboot_required = False
 
         # build hostrepos for priority filtering (same as find_repo_updates)
-        hostrepos = None
-        if self.host_repos_only:
-            hostrepos_q = Q(repo__mirror__enabled=True,
-                            repo__mirror__refresh=True,
-                            repo__mirror__repo__enabled=True,
-                            host=self)
-            hostrepos = HostRepo.objects.select_related(
-                'host', 'repo').filter(hostrepos_q)
+        hostrepos_q = Q(repo__mirror__enabled=True,
+                        repo__mirror__refresh=True,
+                        repo__mirror__repo__enabled=True,
+                        host=self)
+        hostrepos = HostRepo.objects.select_related(
+            'host', 'repo').filter(hostrepos_q)
 
         deb_kernels = kernel_packages.filter(packagetype='D')
         rpm_kernels = kernel_packages.filter(packagetype='R')
